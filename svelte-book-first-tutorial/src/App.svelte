@@ -1,4 +1,5 @@
 <script>
+  import Slider from "./Slider.svelte";
   let product = {
     id: 'svelte-book',
     name: 'Svelte Book',
@@ -62,6 +63,7 @@
 <article class="product">
   <div class="product-main">
     <div class="image-container">
+<!--
       <div class="slider">
         <img src={product.images[sliderLeftIndex]} alt="スライダー画像（左）" class="slider-item left" />
         <img src={product.images[sliderCenterIndex]} alt="スライダー画像" class="slider-item" />
@@ -69,6 +71,8 @@
         <button class="slider-left-button" on:click={sliderMoveLeft}>←</button>
         <button class="slider-right-button" on:click={sliderMoveRight}>→</button>
       </div>
+-->
+      <Slider images={product.images} />
     </div>
     <div>
       <h2>{product.name}</h2>
