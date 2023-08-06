@@ -1,47 +1,172 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  let product = {
+    id: 'svelte-book',
+    name: 'Svelte Book',
+    price: 3500,
+    images: [
+      'https://github.com/svelte-book/sample-app/raw/main/static/svelte-book-1.png',
+      'https://github.com/svelte-book/sample-app/raw/main/static/svelte-book-2.png',
+      'https://github.com/svelte-book/sample-app/raw/main/static/svelte-book-3.png',
+    ],
+  };
+  let sliderCenterIndex = 0;
+  let sliderLeftIndex = product.images.length - 1;
+  let sliderRightIndex = 1;
+  function sliderMoveLeft() {
+    const length = product.images.length;
+    sliderCenterIndex = (sliderCenterIndex - 1 + length) % length;
+    sliderLeftIndex = (sliderCenterIndex - 1 + length) % length;
+    sliderRightIndex = (sliderCenterIndex + 1) % length;
+  }
+  function sliderMoveRight() {
+    const length = product.images.length;
+    sliderCenterIndex = (sliderCenterIndex + 1) % length;
+    sliderLeftIndex = (sliderCenterIndex - 1 + length) % length;
+    sliderRightIndex = (sliderCenterIndex + 1) % length;
+  }
+  let relatedProducts = [
+    {
+      id: 'react-book',
+      name: 'React Book',
+      price: 2500,
+    },
+    {
+      id: 'vue-book',
+      name: 'Vue Book',
+      price: 3500,
+    },
+    {
+      id: 'angular-book',
+      name: 'React Book',
+      price: 4500,
+    },
+  ];
+  let cart = [];
+  function addToCart(productId) {
+    cart = [...cart, productId];
+  }
 </script>
 
-<main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+<header class="header">
+  <a class="header-title" href="/">Svelte EC</a>
+  <nav>
+    <ul class="header-links">
+      <li>ようこそゲストさん</li>
+      <li>
+        <a href="/cart">カート (0)</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<article class="product">
+  <div class="product-main">
+    <div class="image-container">
+      <div class="slider">
+        <img src={product.images[sliderLeftIndex]} alt="スライダー画像（左）" class="slider-item left" />
+        <img src={product.images[sliderCenterIndex]} alt="スライダー画像" class="slider-item" />
+        <img src={product.images[sliderRightIndex]} alt="スライダー画像（右）" class="slider-item right" />
+        <button class="slider-left-button" on:click={sliderMoveLeft}>←</button>
+        <button class="slider-right-button" on:click={sliderMoveRight}>→</button>
+      </div>
+    </div>
+    <div>
+      <h2>{product.name}</h2>
+      <dl>
+        <dt>価格</dt>
+        <dd>{product.price}円</dd>
+      </dl>
+      <div>
+        {#if !cart.includes(product.id)}
+          <button on:click={() => addToCart(product.id)}>カートに入れる</button>
+        {:else}
+          <button disabled>カート追加済み</button>
+        {/if}
+      </div>
+    </div>
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-</main>
+  <footer>
+    <h3>関連商品</h3>
+    <ul>
+      {#each relatedProducts as product}
+        <li>
+          <a href="/products/{product.id}">{product.name}</a>
+          - {product.price}円
+        </li>
+      {/each}
+    </ul>
+  </footer>
+</article>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  :global(body) {
+    margin: 0;
+    background-color: #eee;
+    padding: 0;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 0 15px;
+    width: 100%;
+    max-width: 800px;
+    height: 50px;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+  .header-title {
+    font-weight: bold;
   }
-  .read-the-docs {
-    color: #888;
+  .header-links {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .product {
+    margin: 0 auto;
+  }
+  .product-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .image-container {
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+  }
+  .image-container img {
+    width: 100%;
+  }
+  .slider {
+    position: relative;
+    width: 80%;
+    margin: 0 10%;
+  }
+  .slider-item {
+    width: 100%;
+  }
+  .slider-item.left {
+    position: absolute;
+    top: 0;
+    right: 100%;
+  }
+  .slider-item.right {
+    position: absolute;
+    top: 0;
+    left: 100%;
+  }
+  .slider-left-button {
+    position: absolute;
+    top: 50%;
+    right: 100%;
+  }
+  .slider-right-button {
+    position: absolute;
+    top: 50%;
+    left: 100%;
   }
 </style>
