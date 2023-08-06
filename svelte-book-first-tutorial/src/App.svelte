@@ -142,6 +142,7 @@
     max-width: 400px;
     overflow: hidden;
   }
+/**
   .image-container img {
     width: 100%;
   }
@@ -173,4 +174,5 @@
     top: 50%;
     left: 100%;
   }
+*/
 </style>
